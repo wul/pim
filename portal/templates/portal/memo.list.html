@@ -1,0 +1,73 @@
+{% load static %}
+{% include "portal/_layout.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <h4 class="text-center">笔记列表</h4>
+    <table class="table table-hover table-no-bordered table-sm" id="myTable"></table>
+
+
+<!--
+data-pagination="true"
+data-show-columns="true"
+data-toggle="table"
+data-url="{% url 'api:memo-list' %}"
+-->
+
+  </div>
+</div>
+
+
+<script>
+    var $table = $('#myTable');
+    
+    $(document).ready(function () {
+
+        $table.bootstrapTable({
+            url: '/api/memo/',
+            striped: true,
+            idField: 'id',
+            pagination: true,
+            sidePagination: 'server',
+            toggle:"table",
+            idField: 'id', 
+            columns: [
+                {field: 'ck',checkbox: true },
+                {field: 'title',title: '笔记', editable: true,sortable: true,},
+                {field: 'created_on',title: '创建时间',sortable: true, align: 'center'},
+            ],
+            onLoadSuccess: function(data) {
+                let r = {total: data.count,
+                         rows: data.results,
+                        }
+                $table.bootstrapTable('load', r)
+                $table.bootstrapTable('resetView')
+                console.log('onLoadSuccess done')
+                console.log(r)
+            },
+            onChange: function() {
+
+            },
+        });
+
+        //let data = $table.bootstrapTable('getData');
+        //$table.bootstrapTable('load', data)
+        /*
+        $table.ajax($table.url,
+                    {success: function() {
+                        console.log('hahaah')
+                    },
+                    });
+        */
+        //$table.bootstrapTable('getData')
+        console.log(" ready finished")
+    });
+
+function showDetails (index, row) {
+    console.log(index)
+    console.log(row)
+}
+</script>
+{% endblock %}
